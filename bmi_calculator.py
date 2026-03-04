@@ -1,6 +1,38 @@
 import tabulate
 import csv
 
+# --- NEW: Validation + Exceptions (Feature: Punkt 2) ---
+
+class BMIInputError(ValueError):
+    """Base exception for BMI input validation errors."""
+
+class InvalidHeightError(BMIInputError):
+    """Raised when height is missing or out of valid range."""
+
+class InvalidWeightError(BMIInputError):
+    """Raised when weight is missing or out of valid range."""
+
+def validate_inputs(height: float, weight: float) -> None:
+    """
+    Validate height and weight with reasonable bounds.
+    Raises:
+        InvalidHeightError / InvalidWeightError
+    """
+    if height is None:
+        raise InvalidHeightError("Height is required.")
+    if weight is None:
+        raise InvalidWeightError("Weight is required.")
+
+    # Basic plausibility checks (in meters / kg, as your prompts indicate)
+    if height <= 0:
+        raise InvalidHeightError("Height must be greater than 0 meters.")
+    if not (0.5 <= height <= 2.5):
+        raise InvalidHeightError("Height must be between 0.50 m and 2.50 m.")
+
+    if weight <= 0:
+        raise InvalidWeightError("Weight must be greater than 0 kilograms.")
+    if not (2 <= weight <= 400):
+        raise InvalidWeightError("Weight must be between 2 kg and 400 kg.")
 
 def reference_chart():
     """
